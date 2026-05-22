@@ -1,0 +1,11 @@
+# Ignore all files in the root by default (C# source files, build scripts, workspace configuration)
+/*
+
+# Exclude website directory, README, and gitignore from being ignored
+!/website/
+!/README.md
+!/.gitignore
+
+# Explicitly allow the compiled executable and installer in the website folder for downloads
+!/website/AljoAudioBridge.exe
+!/website/AljoAudioBridgeSetup.exe
