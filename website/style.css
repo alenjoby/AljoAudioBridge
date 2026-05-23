@@ -356,7 +356,7 @@ p {
 
 .app-window {
   width: 520px;
-  height: 650px;
+  height: 600px;
   margin: 0 auto;
   background-color: rgba(6, 6, 9, 0.45);
   backdrop-filter: blur(24px) saturate(180%);
