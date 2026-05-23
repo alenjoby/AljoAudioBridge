@@ -338,8 +338,8 @@ p {
 }
 
 .app-window {
-    width: 440px;
-    height: 500px;
+    width: 520px;
+    height: 600px;
     margin: 0 auto;
     background-color: rgba(6, 6, 9, 0.45);
     backdrop-filter: blur(24px) saturate(180%);
@@ -535,10 +535,11 @@ p {
     display: none;
 }
 
-/* Device Card container (380x86 in layout) */
+/* Device Card container (fluid width, 120px height) */
 .app-card {
-    width: 380px;
-    height: 86px;
+    width: 100%;
+    max-width: 480px;
+    height: 120px;
     background-color: rgba(255, 255, 255, 0.03);
     backdrop-filter: blur(10px) saturate(140%);
     -webkit-backdrop-filter: blur(10px) saturate(140%);
@@ -1326,9 +1327,9 @@ kbd {
     /* App mockup window scaled on mobile */
     .app-window {
         width: 100%;
-        max-width: 440px;
+        max-width: 520px;
         height: auto;
-        aspect-ratio: 440 / 500;
+        aspect-ratio: 520 / 600;
         border-radius: 12px;
     }
     
@@ -1454,4 +1455,191 @@ kbd {
         gap: 12px;
         text-align: center;
     }
+}
+
+/* --- New Audio Bridge Tabs & Recording Styling --- */
+.mock-tab-control-header {
+    display: flex;
+    background-color: rgba(8, 8, 8, 0.9);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 0 10px;
+    height: 36px;
+    min-height: 36px;
+}
+.mock-tab-btn {
+    background: transparent;
+    border: none;
+    color: #787878;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    padding: 0 16px;
+    cursor: pointer;
+    position: relative;
+    height: 100%;
+    transition: color var(--transition-speed);
+}
+.mock-tab-btn:hover {
+    color: #ffffff;
+}
+.mock-tab-btn.active {
+    color: #ffffff;
+    font-weight: 700;
+}
+.mock-tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 4px;
+    right: 4px;
+    height: 2px;
+    background-color: var(--primary);
+}
+.tab-content {
+    display: none;
+    flex-grow: 1;
+    width: 100%;
+    overflow-y: auto;
+}
+.tab-content.active {
+    display: flex;
+    flex-direction: column;
+}
+.card-source-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+}
+.card-source-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-low);
+    width: 48px;
+}
+.custom-select-wrapper {
+    flex-grow: 1;
+    position: relative;
+}
+.card-source-select {
+    width: 100%;
+    height: 22px;
+    background-color: #101010;
+    border: 1px solid #262626;
+    color: #c8c8c8;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    padding: 0 6px;
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+}
+.custom-select-wrapper::after {
+    content: '▼';
+    font-size: 7px;
+    color: #888888;
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+.recording-panel {
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    height: 100%;
+    background-color: transparent;
+    overflow-y: auto;
+}
+.rec-status-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 8px;
+}
+.rec-status-label {
+    font-family: var(--font-mono);
+    font-size: 16px;
+    font-weight: 700;
+    color: #aaaaaa;
+}
+.rec-timer {
+    font-family: var(--font-mono);
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--primary);
+    text-shadow: 0 0 10px rgba(255, 204, 0, 0.2);
+}
+.rec-slider-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.rec-slider-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-low);
+}
+.rec-slider-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.rec-slider-row .custom-slider-container {
+    width: calc(100% - 64px);
+}
+.rec-path-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    cursor: pointer;
+}
+.rec-path-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: #646464;
+}
+.rec-path-value {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: #c8c8c8;
+    background-color: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 6px 12px;
+    border-radius: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: background-color var(--transition-speed);
+}
+.rec-path-group:hover .rec-path-value {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+.btn-start-record {
+    width: 200px;
+    height: 40px;
+    background-color: #1e1e1e;
+    border: 1px solid var(--primary);
+    color: #ffffff;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all var(--transition-speed);
+    margin-top: 8px;
+    flex-shrink: 0;
+}
+.btn-start-record:hover {
+    background-color: #282828;
+    box-shadow: 0 0 12px rgba(255, 204, 0, 0.15);
+}
+.btn-start-record.recording {
+    color: var(--primary);
+    border-color: var(--primary);
 }

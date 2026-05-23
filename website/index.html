@@ -1,367 +1,840 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Aljo Audio Bridge | Multi-Device Audio Routing</title>
-    <meta name="description" content="Stream Windows system audio to headphones and Bluetooth speakers simultaneously. Zero latency, independent volume controls, and global system hotkeys.">
+    <meta
+      name="description"
+      content="Stream Windows system audio to headphones and Bluetooth speakers simultaneously. Zero latency, independent volume controls, and global system hotkeys."
+    />
     <!-- Geist & Geist Mono Premium Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Geist:wght@100..900&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="./soundbridge.png">
-    <link rel="apple-touch-icon" href="./soundbridge.png">
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Geist:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="icon" type="image/png" href="./soundbridge.png" />
+    <link rel="apple-touch-icon" href="./soundbridge.png" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
     <!-- Ambient flowing glowing lights in background -->
     <canvas id="bg-flow-canvas"></canvas>
     <div class="grid-overlay" aria-hidden="true"></div>
 
     <!-- Floating Navigation Bar -->
     <header class="site-header">
-        <div class="container header-container">
-            <a href="/" class="brand">
-                <img src="./soundbridge.png" alt="Aljo Sound Bridge" class="brand-logo">
-                <span class="brand-text">ALJO AUDIO</span>
-            </a>
-            <nav class="main-nav">
-                <a href="#demo">Overview</a>
-                <a href="#comparison">Specs</a>
-                <a href="#hotkeys">Shortcuts</a>
-            </nav>
-            <div class="nav-actions">
-                <a href="./AljoAudioBridgeSetup.exe" class="btn-nav" download>Download</a>
-            </div>
+      <div class="container header-container">
+        <a href="/" class="brand">
+          <img
+            src="./soundbridge.png"
+            alt="Aljo Sound Bridge"
+            class="brand-logo"
+          />
+          <span class="brand-text">ALJO AUDIO</span>
+        </a>
+        <nav class="main-nav">
+          <a href="#demo">Overview</a>
+          <a href="#comparison">Specs</a>
+          <a href="#hotkeys">Shortcuts</a>
+        </nav>
+        <div class="nav-actions">
+          <a href="./AljoAudioBridgeSetup.exe" class="btn-nav" download
+            >Download</a
+          >
         </div>
+      </div>
     </header>
 
     <main>
-        <!-- Hero Section -->
-        <section class="hero">
-            <div class="container hero-container">
-                <div class="hero-chip">
-                    <span class="hero-chip-text">WINDOWS DESKTOP UTILITY</span>
+      <!-- Hero Section -->
+      <section class="hero">
+        <div class="container hero-container">
+          <div class="hero-chip">
+            <span class="hero-chip-text">WINDOWS DESKTOP UTILITY</span>
+          </div>
+          <h1 class="hero-heading">
+            Simultaneous audio routing.<br /><span class="accent-text"
+              >Perfect sync.</span
+            >
+          </h1>
+          <p class="hero-lead">
+            Replicate system audio or map independent microphones to multiple
+            outputs simultaneously with sub-millisecond lag. Control individual
+            volumes, record lossless WAV outputs with adjustable system and
+            microphone gain, choose recording sources, and manage devices
+            instantly from a clean desktop interface.
+          </p>
+          <div class="hero-buttons">
+            <a
+              href="./AljoAudioBridgeSetup.exe"
+              class="btn btn-primary"
+              download
+              aria-label="Download installer (includes lossless recording and routing)"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"
+                />
+              </svg>
+              <span>Download Installer</span>
+            </a>
+            <a
+              href="./AljoAudioBridge.exe"
+              class="btn btn-secondary"
+              download
+              aria-label="Download portable EXE (includes recording and routing)"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polygon points="5 3 19 12 5 21 5 3" />
+              </svg>
+              <span>Portable EXE</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Interactive App Mockup -->
+      <section id="demo" class="demo-section">
+        <div class="container">
+          <!-- C# App Mockup (440px form width) -->
+          <div class="app-window" id="app-window">
+            <!-- Titlebar (55px height) -->
+            <div class="window-titlebar">
+              <div class="window-info">
+                <span class="window-title">ALJO AUDIO BRIDGE</span>
+              </div>
+              <div class="window-actions">
+                <button
+                  class="btn-mute-all"
+                  id="demo-mute-all"
+                  title="Mute All Outputs"
+                >
+                  Mute
+                </button>
+                <button
+                  class="btn-bt-settings"
+                  id="demo-bt-scan"
+                  title="Scan Bluetooth Devices"
+                >
+                  BT
+                </button>
+                <button
+                  class="btn-window-ctrl"
+                  id="demo-minimize"
+                  title="Minimize to System Tray"
+                >
+                  &ndash;
+                </button>
+                <button
+                  class="btn-window-ctrl close"
+                  id="demo-close"
+                  title="Terminate Application"
+                >
+                  &times;
+                </button>
+              </div>
+            </div>
+
+            <!-- App Canvas -->
+            <div class="window-canvas">
+              <!-- Visualizer panel (35px height) -->
+              <div class="visualizer-bar-container">
+                <div class="audio-visualizer-grid" id="audio-visualizer">
+                  <!-- Generated by script.js: 14 columns of 5 dot rows -->
                 </div>
-                <h1 class="hero-heading">Simultaneous audio routing.<br><span class="accent-text">Perfect sync.</span></h1>
-                <p class="hero-lead">
-                    Replicate system audio to multiple outputs simultaneously with sub-millisecond lag. Control individual volumes, bind system-wide hotkeys, and manage your outputs instantly from a clean desktop interface.
+              </div>
+
+              <!-- Tab Control Header -->
+              <div class="mock-tab-control-header">
+                <button class="mock-tab-btn active" id="tab-routing">
+                  Routing
+                </button>
+                <button class="mock-tab-btn" id="tab-recording">
+                  Recording
+                </button>
+              </div>
+
+              <!-- Routing Tab Page Container -->
+              <div class="tab-content active" id="tab-routing-content">
+                <!-- Device Panel (Holds cards) -->
+                <div class="device-panel">
+                  <!-- Card 1: Default multimedia speaker device -->
+                  <div class="app-card default-device" id="card-1">
+                    <div class="card-top">
+                      <div class="card-device-info">
+                        <div class="card-icon-circle">
+                          <!-- Speaker SVGs -->
+                          <svg
+                            width="15"
+                            height="15"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <polygon
+                              points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"
+                              fill="currentColor"
+                            ></polygon>
+                            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+                          </svg>
+                        </div>
+                        <div class="card-meta-text">
+                          <span
+                            class="device-title"
+                            title="Speaker/HP (Realtek High Definition Audio)"
+                            >Speaker/HP (Realtek High Definition Audio)</span
+                          >
+                          <div class="device-sub-row">
+                            <span class="device-type-label">Wired</span>
+                            <span
+                              class="device-status-dot default"
+                              id="status-1"
+                              >&bull; Default</span
+                            >
+                          </div>
+                        </div>
+                      </div>
+                      <!-- Toggle is checked but disabled for default device in WinForms -->
+                      <div class="custom-switch checked disabled" id="toggle-1">
+                        <div class="custom-switch-knob"></div>
+                      </div>
+                    </div>
+                    <div class="card-bottom">
+                      <div
+                        class="custom-slider-container"
+                        id="slider-container-1"
+                      >
+                        <div class="custom-slider-track">
+                          <div
+                            class="custom-slider-fill"
+                            id="fill-1"
+                            style="width: 85%"
+                          ></div>
+                        </div>
+                        <div
+                          class="custom-slider-thumb-dot"
+                          id="thumb-1"
+                          style="left: 85%"
+                        ></div>
+                      </div>
+                      <span class="volume-pct-label" id="val-1">85%</span>
+                    </div>
+                    <div class="card-source-row">
+                      <span class="card-source-label">Source:</span>
+                      <div class="custom-select-wrapper">
+                        <select
+                          class="card-source-select"
+                          id="source-select-1"
+                          title="Select recording source: Mix = System + Mic, or pick a specific input"
+                        >
+                          <option value="SYSTEM_LOOPBACK" selected>
+                            System Audio
+                          </option>
+                          <option value="mic-realtek">
+                            Microphone (Realtek Audio)
+                          </option>
+                          <option value="mic-podcast">
+                            USB Podcast Microphone
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Card 2: Sony WH-1000XM4 Headset -->
+                  <div class="app-card" id="card-2">
+                    <div class="card-top">
+                      <div class="card-device-info">
+                        <div class="card-icon-circle">
+                          <!-- Headphone SVG -->
+                          <svg
+                            width="15"
+                            height="15"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <path d="M3 14c0-4.97 4.03-9 9-9s9 4.03 9 9" />
+                            <rect
+                              x="2"
+                              y="14"
+                              width="4"
+                              height="7"
+                              rx="1"
+                              fill="currentColor"
+                            />
+                            <rect
+                              x="18"
+                              y="14"
+                              width="4"
+                              height="7"
+                              rx="1"
+                              fill="currentColor"
+                            />
+                          </svg>
+                        </div>
+                        <div class="card-meta-text">
+                          <span
+                            class="device-title"
+                            title="Sony WH-1000XM4 (Stereo)"
+                            >Sony WH-1000XM4 (Stereo)</span
+                          >
+                          <div class="device-sub-row">
+                            <span class="device-type-label">Bluetooth</span>
+                            <span
+                              class="device-status-dot routing"
+                              id="status-2"
+                              >&bull; Routing</span
+                            >
+                          </div>
+                        </div>
+                      </div>
+                      <div class="custom-switch checked" id="toggle-2">
+                        <div class="custom-switch-knob"></div>
+                      </div>
+                    </div>
+                    <div class="card-bottom">
+                      <div
+                        class="custom-slider-container"
+                        id="slider-container-2"
+                      >
+                        <div class="custom-slider-track">
+                          <div
+                            class="custom-slider-fill"
+                            id="fill-2"
+                            style="width: 70%"
+                          ></div>
+                        </div>
+                        <div
+                          class="custom-slider-thumb-dot"
+                          id="thumb-2"
+                          style="left: 70%"
+                        ></div>
+                      </div>
+                      <span class="volume-pct-label" id="val-2">70%</span>
+                    </div>
+                    <div class="card-source-row">
+                      <span class="card-source-label">Source:</span>
+                      <div class="custom-select-wrapper">
+                        <select
+                          class="card-source-select"
+                          id="source-select-2"
+                          title="Select recording source: Mix = System + Mic, or pick a specific input"
+                        >
+                          <option value="SYSTEM_LOOPBACK" selected>
+                            System Audio
+                          </option>
+                          <option value="mic-realtek">
+                            Microphone (Realtek Audio)
+                          </option>
+                          <option value="mic-podcast">
+                            USB Podcast Microphone
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Card 3: Bluetooth Speaker -->
+                  <div class="app-card muted-card" id="card-3">
+                    <div class="card-top">
+                      <div class="card-device-info">
+                        <div class="card-icon-circle">
+                          <!-- Speaker SVG -->
+                          <svg
+                            width="15"
+                            height="15"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2.2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            <polygon
+                              points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"
+                              fill="currentColor"
+                            ></polygon>
+                            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+                          </svg>
+                        </div>
+                        <div class="card-meta-text">
+                          <span
+                            class="device-title"
+                            title="IK-S026E (Bluetooth Audio)"
+                            >IK-S026E (Bluetooth Audio)</span
+                          >
+                          <div class="device-sub-row">
+                            <span class="device-type-label">Bluetooth</span>
+                            <span
+                              class="device-status-dot disconnected"
+                              id="status-3"
+                              >&bull; Idle</span
+                            >
+                          </div>
+                        </div>
+                      </div>
+                      <div class="custom-switch" id="toggle-3">
+                        <div class="custom-switch-knob"></div>
+                      </div>
+                    </div>
+                    <div class="card-bottom">
+                      <div
+                        class="custom-slider-container disabled"
+                        id="slider-container-3"
+                      >
+                        <div class="custom-slider-track">
+                          <div
+                            class="custom-slider-fill"
+                            id="fill-3"
+                            style="width: 50%"
+                          ></div>
+                        </div>
+                        <div
+                          class="custom-slider-thumb-dot"
+                          id="thumb-3"
+                          style="left: 50%"
+                        ></div>
+                      </div>
+                      <span class="volume-pct-label" id="val-3">50%</span>
+                    </div>
+                    <div class="card-source-row">
+                      <span class="card-source-label">Source:</span>
+                      <div class="custom-select-wrapper">
+                        <select
+                          class="card-source-select"
+                          id="source-select-3"
+                          title="Select recording source: Mix = System + Mic, or pick a specific input"
+                        >
+                          <option value="SYSTEM_LOOPBACK" selected>
+                            System Audio
+                          </option>
+                          <option value="mic-realtek">
+                            Microphone (Realtek Audio)
+                          </option>
+                          <option value="mic-podcast">
+                            USB Podcast Microphone
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Recording Panel Tab Page (Hidden by default) -->
+              <div class="tab-content" id="tab-recording-content">
+                <div class="recording-panel">
+                  <div class="rec-status-row">
+                    <span class="rec-status-label" id="rec-status"
+                      >Ready to Record</span
+                    >
+                    <span class="rec-timer" id="rec-timer">00:00:00</span>
+                  </div>
+
+                  <div class="rec-slider-group">
+                    <span class="rec-slider-label">System Audio Level</span>
+                    <div class="rec-slider-row">
+                      <div
+                        class="custom-slider-container"
+                        id="rec-sys-slider-container"
+                        title="Adjust system audio level used when recording (applies to WAV output)"
+                      >
+                        <div class="custom-slider-track">
+                          <div
+                            class="custom-slider-fill"
+                            id="rec-sys-fill"
+                            style="width: 100%"
+                          ></div>
+                        </div>
+                        <div
+                          class="custom-slider-thumb-dot"
+                          id="rec-sys-thumb"
+                          style="left: 100%"
+                        ></div>
+                      </div>
+                      <span class="volume-pct-label" id="rec-sys-val"
+                        >100%</span
+                      >
+                    </div>
+                  </div>
+
+                  <div class="rec-slider-group">
+                    <span class="rec-slider-label">Microphone Level</span>
+                    <div class="rec-slider-row">
+                      <div
+                        class="custom-slider-container"
+                        id="rec-mic-slider-container"
+                        title="Adjust microphone level used when recording (applies to WAV output)"
+                      >
+                        <div class="custom-slider-track">
+                          <div
+                            class="custom-slider-fill"
+                            id="rec-mic-fill"
+                            style="width: 100%"
+                          ></div>
+                        </div>
+                        <div
+                          class="custom-slider-thumb-dot"
+                          id="rec-mic-thumb"
+                          style="left: 100%"
+                        ></div>
+                      </div>
+                      <span class="volume-pct-label" id="rec-mic-val"
+                        >100%</span
+                      >
+                    </div>
+                  </div>
+
+                  <div class="rec-path-group">
+                    <span class="rec-path-label"
+                      >Save to: (click to change)</span
+                    >
+                    <span
+                      class="rec-path-value"
+                      id="rec-path-value"
+                      title="Click to change save location"
+                      >C:\Users\User\Music</span
+                    >
+                  </div>
+
+                  <button
+                    class="btn-start-record"
+                    id="btn-start-record"
+                    title="Start or stop recording (saves lossless WAV to the configured folder)"
+                  >
+                    START RECORDING
+                  </button>
+                  <div style="margin-top: 8px; color: #cfcfcf; font-size: 13px">
+                    Lossless WAV · Change save path in-app · Choose source in
+                    recording panel
+                  </div>
+                </div>
+              </div>
+
+              <!-- Recording notes -->
+              <div
+                class="recording-notes"
+                style="
+                  margin: 18px 20px 28px 20px;
+                  color: #cfcfcf;
+                  font-size: 14px;
+                "
+              >
+                <h4 style="margin: 0 0 8px 0; color: #fff; font-size: 15px">
+                  Recording Details
+                </h4>
+                <p style="margin: 0; line-height: 1.4">
+                  Records lossless WAV files. Choose between
+                  <strong>Mix</strong> (system + mic),
+                  <strong>System Audio</strong>, or a specific input device
+                  in-app. Files are saved to your Music folder by default (path
+                  editable in the app). Filenames use the pattern
+                  <em>AljoRecording_YYYYMMDD_HHMMSS.wav</em>. System and mic
+                  gain are applied safely; recording is written with thread-safe
+                  buffering. Check the app log or UI for any write errors.
                 </p>
-                <div class="hero-buttons">
-                    <a href="./AljoAudioBridgeSetup.exe" class="btn btn-primary" download>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-                        <span>Download Installer</span>
-                    </a>
-                    <a href="./AljoAudioBridge.exe" class="btn btn-secondary" download>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                        <span>Portable EXE</span>
-                    </a>
+              </div>
+              <!-- Simulated Scanning Dialog -->
+              <div class="mockup-scan-overlay" id="scan-overlay">
+                <div class="scan-box">
+                  <div class="scan-title-row">
+                    <h4>BT SCANNING</h4>
+                    <button class="btn-close-scan" id="close-scan-btn">
+                      &times;
+                    </button>
+                  </div>
+                  <div class="scan-indicator-row">
+                    <div class="spinner"></div>
+                    <span>Searching for active devices...</span>
+                  </div>
+                  <div class="scan-list">
+                    <div class="scan-item">
+                      <span class="scan-item-name">Bose QC45</span>
+                      <span class="scan-item-status" id="pair-qc45"
+                        >Connect</span
+                      >
+                    </div>
+                    <div class="scan-item">
+                      <span class="scan-item-name">JBL Flip 6</span>
+                      <span class="scan-item-status" id="pair-jbl"
+                        >Connect</span
+                      >
+                    </div>
+                  </div>
                 </div>
+              </div>
+
+              <!-- Simulated Application Terminate Overlay -->
+              <div class="mockup-close-overlay" id="close-overlay">
+                <p>
+                  Application closed completely.<br />Audio routing services
+                  terminated.
+                </p>
+                <button class="btn-restart-demo" id="restart-demo-btn">
+                  Restart Demo
+                </button>
+              </div>
             </div>
-        </section>
+          </div>
+        </div>
+      </section>
 
-        <!-- Interactive App Mockup -->
-        <section id="demo" class="demo-section">
-            <div class="container">
-                <!-- C# App Mockup (440px form width) -->
-                <div class="app-window" id="app-window">
-                    <!-- Titlebar (55px height) -->
-                    <div class="window-titlebar">
-                        <div class="window-info">
-                            <span class="window-title">ALJO AUDIO BRIDGE</span>
-                        </div>
-                        <div class="window-actions">
-                            <button class="btn-mute-all" id="demo-mute-all" title="Mute All Outputs">Mute</button>
-                            <button class="btn-bt-settings" id="demo-bt-scan" title="Scan Bluetooth Devices">BT</button>
-                            <button class="btn-window-ctrl" id="demo-minimize" title="Minimize to System Tray">&ndash;</button>
-                            <button class="btn-window-ctrl close" id="demo-close" title="Terminate Application">&times;</button>
-                        </div>
-                    </div>
+      <!-- Technical Comparison Table -->
+      <section id="comparison" class="comparison-section">
+        <div class="container">
+          <div class="section-title-wrap">
+            <h2>Technical Performance</h2>
+            <p class="section-lead">
+              Designed for latency-free dual outputs, engineered for
+              performance.
+            </p>
+          </div>
+          <div class="table-wrapper">
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th>Feature</th>
+                  <th class="highlight">Aljo Audio Bridge</th>
+                  <th>VoiceMeeter Banana</th>
+                  <th>Windows Stereo Mix</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="feature-name">Audio Capture Latency</td>
+                  <td class="highlight-val">Sub-1ms (Native DirectSound)</td>
+                  <td>20ms to 50ms (WASAPI Queue)</td>
+                  <td>30ms to 80ms (MME Kernel)</td>
+                </tr>
+                <tr>
+                  <td class="feature-name">Audio Input Routing</td>
+                  <td class="highlight-val">
+                    System Audio + Microphone Mapping
+                  </td>
+                  <td>System Audio only</td>
+                  <td>Stereo Mix only</td>
+                </tr>
+                <tr>
+                  <td class="feature-name">Integrated Audio Recorder</td>
+                  <td class="highlight-val">Lossless WAV (Dual Gain Mixers)</td>
+                  <td>None (Requires separate client)</td>
+                  <td>None</td>
+                </tr>
+                <tr>
+                  <td class="feature-name">Memory Footprint</td>
+                  <td class="highlight-val">~12 MB (C# Lightweight Stack)</td>
+                  <td>~140 MB</td>
+                  <td>System Reserved</td>
+                </tr>
+                <tr>
+                  <td class="feature-name">Audio Resampling</td>
+                  <td class="highlight-val">Automatic Sample Matching</td>
+                  <td>Manual configuration required</td>
+                  <td>None (Prone to pitch distortion)</td>
+                </tr>
+                <tr>
+                  <td class="feature-name">Setup Overhead</td>
+                  <td class="highlight-val">Zero Configuration Needed</td>
+                  <td>Complex mixer grids & virtual lines</td>
+                  <td>Hidden inside Legacy Control Panels</td>
+                </tr>
+                <tr>
+                  <td class="feature-name">Global Hotkey Bindings</td>
+                  <td class="highlight-val">Native Ctrl + Alt bindings</td>
+                  <td>Requires external macro application</td>
+                  <td>None</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
 
-                    <!-- App Canvas -->
-                    <div class="window-canvas">
-                        <!-- Visualizer panel (35px height) -->
-                        <div class="visualizer-bar-container">
-                            <div class="audio-visualizer-grid" id="audio-visualizer">
-                                <!-- Generated by script.js: 14 columns of 5 dot rows -->
-                            </div>
-                        </div>
-
-                        <!-- Device Panel (Holds cards) -->
-                        <div class="device-panel">
-                            <!-- Card 1: Default multimedia speaker device -->
-                            <div class="app-card default-device" id="card-1">
-                                <div class="card-top">
-                                    <div class="card-device-info">
-                                        <div class="card-icon-circle">
-                                            <!-- Speaker SVGs -->
-                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                                                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor"></polygon>
-                                                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-                                                <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
-                                            </svg>
-                                        </div>
-                                        <div class="card-meta-text">
-                                            <span class="device-title" title="Speaker/HP (Realtek High Definition Audio)">Speaker/HP (Realtek High Definition Audio)</span>
-                                            <div class="device-sub-row">
-                                                <span class="device-type-label">Wired</span>
-                                                <span class="device-status-dot default">&bull; Default</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Toggle is checked but disabled for default device in WinForms -->
-                                    <div class="custom-switch checked disabled" id="toggle-1">
-                                        <div class="custom-switch-knob"></div>
-                                    </div>
-                                </div>
-                                <div class="card-bottom">
-                                    <div class="custom-slider-container" id="slider-container-1">
-                                        <div class="custom-slider-track">
-                                            <div class="custom-slider-fill" id="fill-1" style="width: 85%;"></div>
-                                        </div>
-                                        <div class="custom-slider-thumb-dot" id="thumb-1" style="left: 85%;"></div>
-                                    </div>
-                                    <span class="volume-pct-label" id="val-1">85%</span>
-                                </div>
-                            </div>
-
-                            <!-- Card 2: Sony WH-1000XM4 Headset -->
-                            <div class="app-card" id="card-2">
-                                <div class="card-top">
-                                    <div class="card-device-info">
-                                        <div class="card-icon-circle">
-                                            <!-- Headphone SVG -->
-                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                                                <path d="M3 14c0-4.97 4.03-9 9-9s9 4.03 9 9" />
-                                                <rect x="2" y="14" width="4" height="7" rx="1" fill="currentColor" />
-                                                <rect x="18" y="14" width="4" height="7" rx="1" fill="currentColor" />
-                                            </svg>
-                                        </div>
-                                        <div class="card-meta-text">
-                                            <span class="device-title" title="Sony WH-1000XM4 (Stereo)">Sony WH-1000XM4 (Stereo)</span>
-                                            <div class="device-sub-row">
-                                                <span class="device-type-label">Bluetooth</span>
-                                                <span class="device-status-dot routing" id="status-2">&bull; Routing</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="custom-switch checked" id="toggle-2">
-                                        <div class="custom-switch-knob"></div>
-                                    </div>
-                                </div>
-                                <div class="card-bottom">
-                                    <div class="custom-slider-container" id="slider-container-2">
-                                        <div class="custom-slider-track">
-                                            <div class="custom-slider-fill" id="fill-2" style="width: 70%;"></div>
-                                        </div>
-                                        <div class="custom-slider-thumb-dot" id="thumb-2" style="left: 70%;"></div>
-                                    </div>
-                                    <span class="volume-pct-label" id="val-2">70%</span>
-                                </div>
-                            </div>
-
-                            <!-- Card 3: Bluetooth Speaker -->
-                            <div class="app-card muted-card" id="card-3">
-                                <div class="card-top">
-                                    <div class="card-device-info">
-                                        <div class="card-icon-circle">
-                                            <!-- Speaker SVG -->
-                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                                                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" fill="currentColor"></polygon>
-                                                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-                                                <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
-                                            </svg>
-                                        </div>
-                                        <div class="card-meta-text">
-                                            <span class="device-title" title="IK-S026E (Bluetooth Audio)">IK-S026E (Bluetooth Audio)</span>
-                                            <div class="device-sub-row">
-                                                <span class="device-type-label">Bluetooth</span>
-                                                <span class="device-status-dot disconnected" id="status-3">&bull; Idle</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="custom-switch" id="toggle-3">
-                                        <div class="custom-switch-knob"></div>
-                                    </div>
-                                </div>
-                                <div class="card-bottom">
-                                    <div class="custom-slider-container disabled" id="slider-container-3">
-                                        <div class="custom-slider-track">
-                                            <div class="custom-slider-fill" id="fill-3" style="width: 50%;"></div>
-                                        </div>
-                                        <div class="custom-slider-thumb-dot" id="thumb-3" style="left: 50%;"></div>
-                                    </div>
-                                    <span class="volume-pct-label" id="val-3">50%</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Simulated Scanning Dialog -->
-                        <div class="mockup-scan-overlay" id="scan-overlay">
-                            <div class="scan-box">
-                                <div class="scan-title-row">
-                                    <h4>BT SCANNING</h4>
-                                    <button class="btn-close-scan" id="close-scan-btn">&times;</button>
-                                </div>
-                                <div class="scan-indicator-row">
-                                    <div class="spinner"></div>
-                                    <span>Searching for active devices...</span>
-                                </div>
-                                <div class="scan-list">
-                                    <div class="scan-item">
-                                        <span class="scan-item-name">Bose QC45</span>
-                                        <span class="scan-item-status" id="pair-qc45">Connect</span>
-                                    </div>
-                                    <div class="scan-item">
-                                        <span class="scan-item-name">JBL Flip 6</span>
-                                        <span class="scan-item-status" id="pair-jbl">Connect</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Simulated Application Terminate Overlay -->
-                        <div class="mockup-close-overlay" id="close-overlay">
-                            <p>Application closed completely.<br>Audio routing services terminated.</p>
-                            <button class="btn-restart-demo" id="restart-demo-btn">Restart Demo</button>
-                        </div>
-                    </div>
-                </div>
+      <!-- Global Hotkeys Grid -->
+      <section id="hotkeys" class="hotkeys-section">
+        <div class="container">
+          <div class="section-title-wrap">
+            <h2>Global Shortcuts</h2>
+            <p class="section-lead">
+              Control volume and mute states system-wide, even during fullscreen
+              games.
+            </p>
+          </div>
+          <div class="shortcuts-grid">
+            <div class="shortcut-card">
+              <div class="shortcut-keys">
+                <kbd>Ctrl</kbd> <span class="plus">+</span> <kbd>Alt</kbd>
+                <span class="plus">+</span> <kbd>Up</kbd>
+              </div>
+              <h3>Increase Volume</h3>
+              <p>
+                Increases volume by 5% on the active routed endpoints and the
+                Windows primary output simultaneously.
+              </p>
             </div>
-        </section>
-
-        <!-- Technical Comparison Table -->
-        <section id="comparison" class="comparison-section">
-            <div class="container">
-                <div class="section-title-wrap">
-                    <h2>Technical Performance</h2>
-                    <p class="section-lead">Designed for latency-free dual outputs, engineered for performance.</p>
-                </div>
-                <div class="table-wrapper">
-                    <table class="compare-table">
-                        <thead>
-                            <tr>
-                                <th>Feature</th>
-                                <th class="highlight">Aljo Audio Bridge</th>
-                                <th>VoiceMeeter Banana</th>
-                                <th>Windows Stereo Mix</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="feature-name">Audio Capture Latency</td>
-                                <td class="highlight-val">Sub-1ms (Native DirectSound)</td>
-                                <td>20ms to 50ms (WASAPI Queue)</td>
-                                <td>30ms to 80ms (MME Kernel)</td>
-                            </tr>
-                            <tr>
-                                <td class="feature-name">Memory Footprint</td>
-                                <td class="highlight-val">~12 MB (C# Lightweight Stack)</td>
-                                <td>~140 MB</td>
-                                <td>System Reserved</td>
-                            </tr>
-                            <tr>
-                                <td class="feature-name">Audio Resampling</td>
-                                <td class="highlight-val">Automatic Sample Matching</td>
-                                <td>Manual configuration required</td>
-                                <td>None (Prone to pitch distortion)</td>
-                            </tr>
-                            <tr>
-                                <td class="feature-name">Setup Overhead</td>
-                                <td class="highlight-val">Zero Configuration Needed</td>
-                                <td>Complex mixer grids & virtual lines</td>
-                                <td>Hidden inside Legacy Control Panels</td>
-                            </tr>
-                            <tr>
-                                <td class="feature-name">Global Hotkey Bindings</td>
-                                <td class="highlight-val">Native Ctrl + Alt bindings</td>
-                                <td>Requires external macro application</td>
-                                <td>None</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+            <div class="shortcut-card">
+              <div class="shortcut-keys">
+                <kbd>Ctrl</kbd> <span class="plus">+</span> <kbd>Alt</kbd>
+                <span class="plus">+</span> <kbd>Down</kbd>
+              </div>
+              <h3>Decrease Volume</h3>
+              <p>
+                Decreases volume by 5% on active routed endpoints and the
+                Windows primary output simultaneously.
+              </p>
             </div>
-        </section>
-
-        <!-- Global Hotkeys Grid -->
-        <section id="hotkeys" class="hotkeys-section">
-            <div class="container">
-                <div class="section-title-wrap">
-                    <h2>Global Shortcuts</h2>
-                    <p class="section-lead">Control volume and mute states system-wide, even during fullscreen games.</p>
-                </div>
-                <div class="shortcuts-grid">
-                    <div class="shortcut-card">
-                        <div class="shortcut-keys">
-                            <kbd>Ctrl</kbd> <span class="plus">+</span> <kbd>Alt</kbd> <span class="plus">+</span> <kbd>Up</kbd>
-                        </div>
-                        <h3>Increase Volume</h3>
-                        <p>Increases volume by 5% on the active routed endpoints and the Windows primary output simultaneously.</p>
-                    </div>
-                    <div class="shortcut-card">
-                        <div class="shortcut-keys">
-                            <kbd>Ctrl</kbd> <span class="plus">+</span> <kbd>Alt</kbd> <span class="plus">+</span> <kbd>Down</kbd>
-                        </div>
-                        <h3>Decrease Volume</h3>
-                        <p>Decreases volume by 5% on active routed endpoints and the Windows primary output simultaneously.</p>
-                    </div>
-                    <div class="shortcut-card">
-                        <div class="shortcut-keys">
-                            <kbd>Ctrl</kbd> <span class="plus">+</span> <kbd>Alt</kbd> <span class="plus">+</span> <kbd>M</kbd>
-                        </div>
-                        <h3>Toggle Master Mute</h3>
-                        <p>Globally mutes or unmutes the audio routing bridge instantly with a soft fade to prevent sound clicks.</p>
-                    </div>
-                </div>
+            <div class="shortcut-card">
+              <div class="shortcut-keys">
+                <kbd>Ctrl</kbd> <span class="plus">+</span> <kbd>Alt</kbd>
+                <span class="plus">+</span> <kbd>M</kbd>
+              </div>
+              <h3>Toggle Master Mute</h3>
+              <p>
+                Globally mutes or unmutes the audio routing bridge instantly
+                with a soft fade to prevent sound clicks.
+              </p>
             </div>
-        </section>
+          </div>
+        </div>
+      </section>
 
-        <!-- Command Line Installation Option -->
-        <section class="cli-section">
-            <div class="container">
-                <div class="cli-card">
-                    <div class="cli-header">
-                        <span class="cli-dot red"></span>
-                        <span class="cli-dot yellow"></span>
-                        <span class="cli-dot green"></span>
-                        <span class="cli-title">Windows Command Prompt</span>
-                    </div>
-                    <div class="cli-body">
-                        <span class="cli-prompt">C:\&gt;</span>
-                        <span class="cli-command">winget install Aljo.AudioBridge</span>
-                        <button class="btn-copy-cli" id="copy-btn" title="Copy Command">
-                            <svg id="copy-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
+      <!-- Command Line Installation Option -->
+      <section class="cli-section">
+        <div class="container">
+          <div class="cli-card">
+            <div class="cli-header">
+              <span class="cli-dot red"></span>
+              <span class="cli-dot yellow"></span>
+              <span class="cli-dot green"></span>
+              <span class="cli-title">Windows Command Prompt</span>
             </div>
-        </section>
+            <div class="cli-body">
+              <span class="cli-prompt">C:\&gt;</span>
+              <span class="cli-command">winget install Aljo.AudioBridge</span>
+              <button class="btn-copy-cli" id="copy-btn" title="Copy Command">
+                <svg
+                  id="copy-icon"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path
+                    d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
 
-        <!-- Call to Action -->
-        <section class="cta">
-            <div class="container cta-container">
-                <h2>Take control of your desktop soundscape.</h2>
-                <p>Download the lightweight C# utility now to link your Bluetooth speakers and headphones instantly.</p>
-                <div class="cta-actions">
-                    <a href="./AljoAudioBridgeSetup.exe" class="btn btn-primary btn-cta" download>Download Installer Wizard</a>
-                    <a href="./AljoAudioBridge.exe" class="btn btn-secondary btn-cta" download>Download Portable EXE</a>
-                </div>
-            </div>
-        </section>
+      <!-- Call to Action -->
+      <section class="cta">
+        <div class="container cta-container">
+          <h2>Take control of your desktop soundscape.</h2>
+          <p>
+            Download the lightweight C# utility now to link your Bluetooth
+            speakers and headphones instantly.
+          </p>
+          <div class="cta-actions">
+            <a
+              href="./AljoAudioBridgeSetup.exe"
+              class="btn btn-primary btn-cta"
+              download
+              >Download Installer Wizard</a
+            >
+            <a
+              href="./AljoAudioBridge.exe"
+              class="btn btn-secondary btn-cta"
+              download
+              >Download Portable EXE</a
+            >
+          </div>
+        </div>
+      </section>
     </main>
+
+    <!-- FAQ -->
+    <section
+      id="faq"
+      class="faq-section"
+      style="
+        background: transparent;
+        padding: 28px 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.04);
+      "
+    >
+      <div class="container">
+        <h3 style="color: #ffffff; margin: 0 0 8px 0">FAQ</h3>
+        <div style="color: #cfcfcf; font-size: 14px; line-height: 1.5">
+          <p style="margin: 6px 0">
+            <strong>Recording format:</strong> The app records lossless WAV
+            files. Filenames use <em>AljoRecording_YYYYMMDD_HHMMSS.wav</em>.
+          </p>
+          <p style="margin: 6px 0">
+            <strong>Save location:</strong> By default recordings go to your
+            Music folder; you can change the save path in-app and it's persisted
+            between runs.
+          </p>
+          <p style="margin: 6px 0">
+            <strong>Source options:</strong> Choose <em>Mix</em> (system + mic),
+            <em>System Audio</em>, or a specific input device from the recording
+            panel inside the app.
+          </p>
+          <p style="margin: 6px 0">
+            <strong>Troubleshooting:</strong> If a recording fails to save,
+            check the app log at
+            <code>%AppData%\AljoAudioBridge\app.log</code> and ensure the target
+            folder is writable.
+          </p>
+        </div>
+      </div>
+    </section>
 
     <!-- Footer -->
     <footer class="site-footer">
-        <div class="container footer-container">
-            <span class="footer-brand">&copy; 2026 Aljo Audio Bridge</span>
-            <span class="footer-license">Distributed under the MIT License.</span>
-        </div>
+      <div class="container footer-container">
+        <span class="footer-brand">&copy; 2026 Aljo Audio Bridge</span>
+        <span class="footer-license">Distributed under the MIT License.</span>
+      </div>
     </footer>
 
     <script src="script.js"></script>
-</body>
+  </body>
 </html>

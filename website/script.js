@@ -25,6 +25,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // States
     let isMuted = false;
     let isClosed = false;
+    let isRecordingDemo = false;
+    let recordingSeconds = 0;
+    let recordingInterval = null;
 
     // 2. Animation Loop for Audio Visualizer
     let animationFrameId;
@@ -50,10 +53,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         lastTime = time;
 
-        // Get volume scaling factor from default speaker volume (Card 1)
-        const volumeLabel = document.getElementById('val-1');
-        const volumePercent = volumeLabel ? (parseInt(volumeLabel.textContent) || 0) : 85;
-        const scale = volumePercent / 100;
+        // Get volume scaling factor from the max volume of active routing devices
+        let maxVolume = 0;
+        for (let cardId = 1; cardId <= 3; cardId++) {
+            const toggle = document.getElementById(`toggle-${cardId}`);
+            const volumeLabel = document.getElementById(`val-${cardId}`);
+            if (toggle && toggle.classList.contains('checked') && volumeLabel) {
+                const vol = parseInt(volumeLabel.textContent) || 0;
+                if (vol > maxVolume) maxVolume = vol;
+            }
+        }
+        let scale = maxVolume / 100;
+        if (isRecordingDemo) {
+            scale = Math.min(1.15, scale * 1.15); // Apply visual boost when recording is running
+        }
 
         // Calculate visualizer heights
         for (let i = 0; i < columnsCount; i++) {
@@ -171,6 +184,53 @@ document.addEventListener('DOMContentLoaded', () => {
             isClosed = false;
             isMuted = false;
 
+            // Stop active recording interval
+            if (recordingInterval) {
+                clearInterval(recordingInterval);
+                recordingInterval = null;
+            }
+            isRecordingDemo = false;
+
+            // Switch back to Routing Tab
+            switchTab('routing');
+
+            // Reset recording UI values
+            const btnStartRecord = document.getElementById('btn-start-record');
+            const recStatus = document.getElementById('rec-status');
+            const recTimer = document.getElementById('rec-timer');
+            if (btnStartRecord) {
+                btnStartRecord.textContent = 'START RECORDING';
+                btnStartRecord.classList.remove('recording');
+            }
+            if (recStatus) {
+                recStatus.textContent = 'Ready to Record';
+                recStatus.style.color = '#aaaaaa';
+            }
+            if (recTimer) {
+                recTimer.textContent = '00:00:00';
+            }
+
+            // Reset recording sliders
+            const recSysFill = document.getElementById('rec-sys-fill');
+            const recSysThumb = document.getElementById('rec-sys-thumb');
+            const recSysVal = document.getElementById('rec-sys-val');
+            if (recSysFill) recSysFill.style.width = '100%';
+            if (recSysThumb) recSysThumb.style.left = '100%';
+            if (recSysVal) recSysVal.textContent = '100%';
+
+            const recMicFill = document.getElementById('rec-mic-fill');
+            const recMicThumb = document.getElementById('rec-mic-thumb');
+            const recMicVal = document.getElementById('rec-mic-val');
+            if (recMicFill) recMicFill.style.width = '100%';
+            if (recMicThumb) recMicThumb.style.left = '100%';
+            if (recMicVal) recMicVal.textContent = '100%';
+
+            // Reset path value
+            const pathValueLabel = document.getElementById('rec-path-value');
+            if (pathValueLabel) {
+                pathValueLabel.textContent = 'C:\\Users\\User\\Music';
+            }
+
             // Hide overlays
             if (closeOverlay) closeOverlay.classList.remove('show');
             const scanOverlay = document.getElementById('scan-overlay');
@@ -180,20 +240,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const fill1 = document.getElementById('fill-1');
             const thumb1 = document.getElementById('thumb-1');
             const val1 = document.getElementById('val-1');
+            const select1 = document.getElementById('source-select-1');
             if (fill1) fill1.style.width = '85%';
             if (thumb1) thumb1.style.left = '85%';
             if (val1) val1.textContent = '85%';
+            if (select1) select1.value = 'SYSTEM_LOOPBACK';
 
             // Reset Card 2 (Sony Headphones)
             const toggle2 = document.getElementById('toggle-2');
             if (toggle2) toggle2.classList.add('checked');
-            const sliderContainer2 = document.getElementById('slider-container-2');
-            if (sliderContainer2) sliderContainer2.classList.remove('disabled');
-            const status2 = document.getElementById('status-2');
-            if (status2) {
-                status2.className = 'device-status-dot routing';
-                status2.innerHTML = '&bull; Routing';
-            }
+            const select2 = document.getElementById('source-select-2');
+            if (select2) select2.value = 'SYSTEM_LOOPBACK';
             const fill2 = document.getElementById('fill-2');
             const thumb2 = document.getElementById('thumb-2');
             const val2 = document.getElementById('val-2');
@@ -209,19 +266,19 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             const toggle3 = document.getElementById('toggle-3');
             if (toggle3) toggle3.classList.remove('checked');
-            const sliderContainer3 = document.getElementById('slider-container-3');
-            if (sliderContainer3) sliderContainer3.classList.add('disabled');
-            const status3 = document.getElementById('status-3');
-            if (status3) {
-                status3.className = 'device-status-dot disconnected';
-                status3.innerHTML = '&bull; Idle';
-            }
+            const select3 = document.getElementById('source-select-3');
+            if (select3) select3.value = 'SYSTEM_LOOPBACK';
             const fill3 = document.getElementById('fill-3');
             const thumb3 = document.getElementById('thumb-3');
             const val3 = document.getElementById('val-3');
             if (fill3) fill3.style.width = '50%';
             if (thumb3) thumb3.style.left = '50%';
             if (val3) val3.textContent = '50%';
+
+            // Sync card status labels
+            for (let i = 1; i <= 3; i++) {
+                updateCardStatus(i);
+            }
 
             // Sync mute states
             syncMutedState();
@@ -352,37 +409,148 @@ document.addEventListener('DOMContentLoaded', () => {
     setupCustomSlider('slider-container-2', 'fill-2', 'thumb-2', 'val-2');
     setupCustomSlider('slider-container-3', 'fill-3', 'thumb-3', 'val-3');
 
-    // 10. Switch toggles
-    function setupSwitch(toggleId, cardId, sliderContainerId, statusId) {
-        const toggle = document.getElementById(toggleId);
-        const card = document.getElementById(cardId);
-        const sliderContainer = document.getElementById(sliderContainerId);
-        const statusDot = document.getElementById(statusId);
+    // 10. Card Status Helper and Switch toggles
+    function updateCardStatus(cardId) {
+        const toggle = document.getElementById(`toggle-${cardId}`);
+        const select = document.getElementById(`source-select-${cardId}`);
+        const statusDot = document.getElementById(`status-${cardId}`);
+        const card = document.getElementById(`card-${cardId}`);
+        const sliderContainer = document.getElementById(`slider-container-${cardId}`);
 
-        if (!toggle || !card || !sliderContainer || !statusDot) return;
+        if (!toggle || !statusDot) return;
+
+        const isChecked = toggle.classList.contains('checked');
+        const source = select ? select.value : 'SYSTEM_LOOPBACK';
+
+        if (isChecked) {
+            if (sliderContainer) sliderContainer.classList.remove('disabled');
+            if (cardId === 1) {
+                if (source === 'SYSTEM_LOOPBACK') {
+                    statusDot.className = 'device-status-dot default';
+                    statusDot.innerHTML = '&bull; Default';
+                } else {
+                    statusDot.className = 'device-status-dot default';
+                    statusDot.innerHTML = '&bull; Default (Mic)';
+                }
+            } else {
+                statusDot.className = 'device-status-dot routing';
+                statusDot.innerHTML = source === 'SYSTEM_LOOPBACK' ? '&bull; Routing' : '&bull; Routing (Mic)';
+            }
+            if (card && !isMuted) {
+                card.classList.remove('muted-card');
+            }
+        } else {
+            if (sliderContainer) sliderContainer.classList.add('disabled');
+            statusDot.className = 'device-status-dot disconnected';
+            statusDot.innerHTML = '&bull; Idle';
+            if (card) card.classList.add('muted-card');
+        }
+    }
+
+    function setupSwitch(toggleId, cardIdNumber) {
+        const toggle = document.getElementById(toggleId);
+        if (!toggle) return;
 
         toggle.addEventListener('click', () => {
             if (toggle.classList.contains('disabled')) return;
+            toggle.classList.toggle('checked');
+            updateCardStatus(cardIdNumber);
+        });
+    }
 
-            const isChecked = toggle.classList.toggle('checked');
-            if (isChecked) {
-                sliderContainer.classList.remove('disabled');
-                statusDot.className = 'device-status-dot routing';
-                statusDot.innerHTML = '&bull; Routing';
-                if (!isMuted) {
-                    card.classList.remove('muted-card');
-                }
-            } else {
-                sliderContainer.classList.add('disabled');
-                statusDot.className = 'device-status-dot disconnected';
-                statusDot.innerHTML = '&bull; Idle';
-                card.classList.add('muted-card');
+    setupSwitch('toggle-2', 2);
+    setupSwitch('toggle-3', 3);
+
+    // Attach select dropdown change event listeners
+    for (let cardId = 1; cardId <= 3; cardId++) {
+        const select = document.getElementById(`source-select-${cardId}`);
+        if (select) {
+            select.addEventListener('change', () => updateCardStatus(cardId));
+        }
+    }
+
+    // 10b. Mock Tab Control Switching
+    const tabRouting = document.getElementById('tab-routing');
+    const tabRecording = document.getElementById('tab-recording');
+    const contentRouting = document.getElementById('tab-routing-content');
+    const contentRecording = document.getElementById('tab-recording-content');
+
+    function switchTab(activeTab) {
+        if (!tabRouting || !tabRecording || !contentRouting || !contentRecording) return;
+        if (activeTab === 'routing') {
+            tabRouting.classList.add('active');
+            tabRecording.classList.remove('active');
+            contentRouting.classList.add('active');
+            contentRecording.classList.remove('active');
+        } else {
+            tabRouting.classList.remove('active');
+            tabRecording.classList.add('active');
+            contentRouting.classList.remove('active');
+            contentRecording.classList.add('active');
+        }
+    }
+
+    if (tabRouting && tabRecording) {
+        tabRouting.addEventListener('click', () => switchTab('routing'));
+        tabRecording.addEventListener('click', () => switchTab('recording'));
+    }
+
+    // 10c. Recording Panel Gain Sliders
+    setupCustomSlider('rec-sys-slider-container', 'rec-sys-fill', 'rec-sys-thumb', 'rec-sys-val');
+    setupCustomSlider('rec-mic-slider-container', 'rec-mic-fill', 'rec-mic-thumb', 'rec-mic-val');
+
+    // 10d. Click-to-Change Destination Save Path
+    const pathValueLabel = document.getElementById('rec-path-value');
+    if (pathValueLabel) {
+        pathValueLabel.addEventListener('click', () => {
+            const currentVal = pathValueLabel.textContent;
+            const newVal = prompt("Enter custom recording save path:", currentVal);
+            if (newVal && newVal.trim() !== '') {
+                pathValueLabel.textContent = newVal.trim();
             }
         });
     }
 
-    setupSwitch('toggle-2', 'card-2', 'slider-container-2', 'status-2');
-    setupSwitch('toggle-3', 'card-3', 'slider-container-3', 'status-3');
+    // 10e. Recording Action & Timer Simulation
+    const btnStartRecord = document.getElementById('btn-start-record');
+    const recStatus = document.getElementById('rec-status');
+    const recTimer = document.getElementById('rec-timer');
+
+    if (btnStartRecord) {
+        btnStartRecord.addEventListener('click', () => {
+            if (!isRecordingDemo) {
+                isRecordingDemo = true;
+                btnStartRecord.textContent = 'STOP RECORDING';
+                btnStartRecord.classList.add('recording');
+                if (recStatus) {
+                    recStatus.textContent = 'Recording...';
+                    recStatus.style.color = 'var(--danger)';
+                }
+                recordingSeconds = 0;
+                if (recTimer) recTimer.textContent = '00:00:00';
+                
+                recordingInterval = setInterval(() => {
+                    recordingSeconds++;
+                    const h = Math.floor(recordingSeconds / 3600).toString().padStart(2, '0');
+                    const m = Math.floor((recordingSeconds % 3600) / 60).toString().padStart(2, '0');
+                    const s = Math.floor(recordingSeconds % 60).toString().padStart(2, '0');
+                    if (recTimer) recTimer.textContent = `${h}:${m}:${s}`;
+                }, 1000);
+            } else {
+                isRecordingDemo = false;
+                if (recordingInterval) {
+                    clearInterval(recordingInterval);
+                    recordingInterval = null;
+                }
+                btnStartRecord.textContent = 'START RECORDING';
+                btnStartRecord.classList.remove('recording');
+                if (recStatus) {
+                    recStatus.textContent = 'Recording Saved';
+                    recStatus.style.color = 'var(--success)';
+                }
+            }
+        });
+    }
 
     // 11. Command Line winget Copy Command
     const copyBtn = document.getElementById('copy-btn');
